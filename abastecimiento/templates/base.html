@@ -1,0 +1,76 @@
+<!doctype html>
+<html>
+  <head>
+    <title>{% block title %}Abastecimiento.pe{% endblock %}</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" media="screen" href="/media/bootstrap/css/bootstrap.css">
+    <link rel="stylesheet" media="screen" href="/media/css/vendor/font-awesome.min.css">
+    <link rel="stylesheet" media="screen" href="/media/css/vendor/jquery.ui.min.css">
+    <link rel="stylesheet" media="screen" href="/media/css/theme.css">
+    <link rel="stylesheet" media="screen" href="/media/css/abastecimiento.css">
+    {% block css %}{% endblock %}
+  </head>
+  <body>
+    <div id="wrap">
+      <nav class="navbar navbar-inverse navbar-fixed-top" role="navigation">
+        <div class="navbar-header">
+          <button type="button" data-toggle="collapse" data-target=".navbar-ex1-collapse" class="navbar-toggle">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <a href="/" class="navbar-brand">Abastecimiento</a>
+        </div>
+        <div class="collapse navbar-collapse navbar-ex1-collapse">
+          <ul class="nav navbar-nav">
+            {% include 'menu.html' %}
+          </ul>
+        </div>
+      </nav>
+      <div class="container">
+        {% if messages %}
+          {% for message in messages %}
+          <div class="alert alert-{% if message.tags %}{{ message.tags }}{% endif %} animated bounceIn">
+            <a class="close" data-dismiss="alert" href="#" aria-hidden="true">&times;</a>
+            <p>{{ message }}</p>
+          </div>
+          {% endfor %}
+        {% endif %}
+        {% block content %}{% endblock %}
+      </div>      
+    </div>
+    <hr>
+    <footer id="footer">
+      <div class="container">
+        <p class="text-muted credit text-right">
+          CDTI &copy; 2014
+        </p>
+      </div>
+    </footer>
+
+    <div class="modal fade" id="ayuda" tabindex="-1" role="dialog" aria-labelledby="ayudaLabel" aria-hidden="true">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+            <h4 class="modal-title">Ayuda</h4>
+          </div>
+          <div class="modal-body">
+            {% block help %}{% endblock %}
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-info" data-dismiss="modal">Entendido</button>
+          </div>
+        </div>
+      </div>
+    </div>
+    {% block modals %}{% endblock %}
+    {% block templates %}{% endblock %}
+    <script src="/media/js/vendor/jquery.min.js"></script>
+    <script src="/media/js/vendor/jquery.ui.min.js"></script>
+    <script src="/media/bootstrap/js/bootstrap.min.js"></script>
+    <script src="/media/js/vendor/jquery.infinitescroll.js"></script>
+    {% block js %}{% endblock %}
+  </body>
+</html>

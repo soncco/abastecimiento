@@ -1,0 +1,115 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="page-header">
+  <h3><i class="fa fa-list-ul icon-list"></i> Requerimientos
+  <small class="pull-right"><a class="btn btn-primary" href="{% url 'requerimiento_nuevo' %}">Nuevo requerimiento</a></small>
+  </h3>
+</div>
+
+<table class="table table-striped">
+  <thead>
+    <tr>
+      <th>Número</th>
+      <th>Fecha</th>
+      <th>Creado por</th>
+      <th>Acciones</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for requerimiento in requerimientos %}
+      <tr>
+        <td>{{ requerimiento.numero }}</td>
+        <td>{{ requerimiento.fecha }}</td>
+        <td>{{ requerimiento.creado_por.usuario.first_name }}</td>
+        <td>
+          <a href="#" class="btn btn-default view" title="Vista Rápida" data-rid="{{ requerimiento.pk }}"><i class="fa fa-eye"></i></a>
+          <a href="#" class="btn btn-default" title="Editar"><i class="fa fa-edit"></i></a>
+          <a href="#" class="btn btn-default" title="Imprimir"><i class="fa fa-print"></i></a>
+        </td>
+      </tr>
+    {% endfor %}
+    {% for item in "x" %}
+    {% endfor %}
+    <tr class="navigation"></tr>
+  </tbody>
+</table>
+{% endblock %}
+
+{% block js %}
+<script src="/media/js/vendor/handlebars-v1.2.0.js"></script>
+<script src="/media/js/actions/general.js"></script>
+<script src="/media/js/actions/requerimiento/requerimiento.js"></script>
+{% endblock %}
+
+{% block title %}Requerimientos{% endblock %}
+
+{% block templates %}
+<script type="text/x-handlebars-template" id="tpl-requerimiento-data">
+<div class="panel panel-success">
+  <div class="panel-heading">
+    Requerimiento Nro: {% templatetag openvariable %} numero {% templatetag closevariable %}
+  </div>
+  <ul class="list-group">
+    <li class="list-group-item">
+      <label>Proyecto</label>:
+      {% templatetag openvariable %} proyecto {% templatetag closevariable %}
+    </li>
+    <li class="list-group-item">
+      <label>Fecha</label>:
+      {% templatetag openvariable %} fecha {% templatetag closevariable %}
+    </li>
+    <li class="list-group-item">
+      <label>Creado por</label>:
+      {% templatetag openvariable %} creado_por {% templatetag closevariable %}
+    </li>
+    <li class="list-group-item">
+      <label>Glosa</label>:
+      {% templatetag openvariable %} glosa {% templatetag closevariable %}
+    </li>
+  </ul>
+</div>
+</script>
+
+<script type="text/x-handlebars-template" id="tpl-requerimiento-detalles">
+<div class="panel panel-info">
+  <div class="panel-heading">Detalles</div>
+  <table class="table table-striped">
+    <thead>
+      <tr>
+        <th>Cantidad</th>  
+        <th>Producto</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% templatetag openvariable %}#each detalles{% templatetag closevariable %}
+      <tr>
+        <td>{% templatetag openvariable %} cantidad {% templatetag closevariable %}</td>
+        <td>{% templatetag openvariable %} producto {% templatetag closevariable %}</td>
+      </tr>
+      {% templatetag openvariable %}/detalles{% templatetag closevariable %}
+    </tbody>
+  </table>
+</div>
+</script>
+{% endblock %}
+
+{% block modals %}
+<div class="modal fade modal-large" id="modal-quick" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+        <h4 class="modal-title" id="myModalLabel">Vista rápida de requerimiento</h4>
+      </div>
+      <div class="modal-body">
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">Cerrar</button>
+        <button type="submit" class="btn btn-primary">Editar</button>
+        <button type="submit" class="btn btn-primary">Imprimir</button>
+        {% csrf_token %}
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

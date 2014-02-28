@@ -1,0 +1,158 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="page-header">
+  <h3><i class="fa fa-file icon-new"></i> Nuevo requerimiento
+    <small><a href="#" title="Ayuda" data-toggle="modal" data-target="#ayuda"><i class="fa fa-question-circle icon-circle"></i></a></small>
+  </h3>
+</div>
+<form action="{% url 'requerimiento_nuevo' %}" role="form" method="post" id="the-form">
+<div class="row">
+  <div class="col-md-4">
+    <div class="page-header mini">
+      <h5>Información</h5>
+    </div>
+    <div class="form-group">
+      <label for="proyecto">Proyecto</label>
+      <select class="form-control" name="proyecto" id="proyecto" required>
+        <option value="">Escoge un proyecto</option>
+        {% for proyecto in proyectos %}
+        <option value="{{ proyecto.pk }}">{{ proyecto.nombre }}</option>
+        {% empty %}
+        <option value="">No existen proyectos</option>
+        {% endfor %}
+      </select>
+    </div>
+    <div class="form-group">
+      <label for="numero">Número</label>
+      <input type="text" class="form-control" name="numero" id="numero" autofocus required autocomplete="off">
+    </div>
+    <div class="form-group">
+      <label for="fecha">Fecha</label>
+      <input type="text" class="form-control datepicker" name="fecha" id="fecha" required autocomplete="off">
+    </div>
+    <div class="form-group">
+      <label for="glosa">Glosa</label>
+      <textarea name="glosa" id="glosa" cols="30" rows="8" class="form-control"></textarea>
+    </div>
+  </div>
+  <div class="col-md-8 line-left">
+    <div class="page-header mini">
+      <h5>Detalles</h5>
+    </div>
+    <table class="table table-striped table-condensed">
+      <thead>
+        <tr>
+          <th class="col-md-2">Cantidad</th>
+          <th>Producto</th>
+          <th class="col-md-1">Acciones</th>
+        </tr>
+      </thead>
+      <tbody id="detalles">
+        <tr>
+          <td>
+            <input type="number" class="form-control cantidad" required min="1" step="0.000001">
+          </td>
+          <td>
+            <input type="text" class="form-control autocomplete-productos" required>
+          </td>
+          <td class="text-center">
+            <button class="btn btn-danger remove-detalle" type="button"><i class="fa fa-times"></i></button>
+          </td>
+        </tr>
+      </tbody>
+      <tfoot>
+        <tr>
+          <td colspan="3">
+            <button class="btn btn-info btn-block" type="button" id="add-detalle"><i class="fa fa-plus-circle"></i> Agregar otro detalle</button>
+          </td>
+        </tr>
+      </tfoot>
+    </table>
+  </div>
+</div>  
+<div class="actions">
+  <p class="text-right">
+    <button class="btn btn-success"><i class="fa fa-floppy-o"></i> Guardar</button>
+    {% csrf_token %}
+    <a href="{% url 'requerimiento' %}" class="btn btn-default"><i class="fa fa-times"></i> Cancelar</a>
+  </p>
+</div>
+<input id="id_requerimientodetalle_set-TOTAL_FORMS" name="requerimientodetalle_set-TOTAL_FORMS" type="hidden" value="">
+<input id="id_requerimientodetalle_set-INITIAL_FORMS" name="requerimientodetalle_set-INITIAL_FORMS" type="hidden" value="0">
+<input id="id_requerimientodetalle_set-MAX_NUM_FORMS" name="requerimientodetalle_set-MAX_NUM_FORMS" type="hidden" value="1000">
+<input id="creado_por" name="creado_por" type="hidden" value="1">
+</form>
+{% endblock %}
+
+{% block js %}
+<script>
+  var prefix = '{{ detalle_form.prefix }}';
+</script>
+<script src="/media/js/vendor/handlebars-v1.2.0.js"></script>
+<script src="/media/js/vendor/underscore-min.js"></script>
+<script src="/media/js/vendor/backbone-min.js"></script>
+<script src="/media/js/models/detalle.js"></script>
+<script src="/media/js/collections/detalles.js"></script>
+<script src="/media/js/actions/general.js"></script>
+<script src="/media/js/actions/detalles.js"></script>
+<script src="/media/js/actions/requerimiento/requerimiento-nuevo.js"></script>
+{% endblock %}
+
+{% block title %}Nuevo Requerimiento{% endblock %}
+
+{% block help %}
+  <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Reprehenderit, dignissimos, quia, tempore neque deserunt odit sit repudiandae vero quod aperiam nobis minus aliquam praesentium ea impedit est iste nesciunt velit!</p>  
+{% endblock %}
+
+{% block templates %}
+<script type="text/x-handlebars-template" id="tpl-detalle-row">
+  <tr>
+    <td>
+      <input type="number" class="form-control cantidad" required min="1" step="0.000001">
+    </td>
+    <td>
+      <input type="text" class="form-control autocomplete-productos" required>
+    </td>
+    <td class="text-center">
+      <button class="btn btn-danger remove-detalle" type="button"><i class="fa fa-times"></i></button>
+    </td>
+  </tr>
+</script>
+<script type="text/x-handlebars-template" id="tpl-detalle-none">
+  <small class="text-danger message-no-existe">No existe el detalle que buscas, <a href="#" data-toggle="modal" data-target="#modal-product"><strong>crealo ahora mismo</strong></a>.</small>
+</script>
+<script type="text/x-handlebars-template" id="tpl-hidden">
+  <input type="hidden" name="{% templatetag openvariable %} name {% templatetag closevariable %}" value="{% templatetag openvariable %} value {% templatetag closevariable %}">
+</script>
+{% endblock %}
+
+{% block modals %}
+<form id="form-product">
+  <div class="modal fade" id="modal-product" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+          <h4 class="modal-title" id="myModalLabel">Nuevo producto</h4>
+        </div>
+        <div class="modal-body">
+          <div class="alert alert-warning"><small><i class="fa fa-exclamation-circle"></i> Ingresa el producto en singular, por ejemplo: <strong>Unidad Plumón</strong> en vez de <strong>Unidades de Plumones</strong></small></div>
+          <div class="form-group">
+            <label for="unidad_medida">Unidad de medida:</label>
+            <input type="text" class="form-control" name="unidad_medida" id="unidad-medida" autofocus required autocomplete="off" maxlength="10">
+          </div>
+          <div class="form-group">
+            <label for="descripcion">Descripción</label>
+            <textarea name="descripcion" id="descripcion" rows="10" class="form-control" required=""></textarea>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-default" data-dismiss="modal">Cerrar</button>
+          <button type="submit" class="btn btn-primary">Guardar</button>
+          {% csrf_token %}
+        </div>
+      </div>
+    </div>
+  </div>
+</form>
+{% endblock %}
